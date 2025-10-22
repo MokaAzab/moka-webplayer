@@ -1,25 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Spotify Callback</title>
-  <script>
-    // Parse the returned ?code= from the URL
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("code");
-
-    if (code) {
-      // Temporarily store the code in localStorage
-      localStorage.setItem("spotify_auth_code", code);
-      // Redirect back to the main page
-      window.location.href = window.location.origin + "/";
-    } else {
-      // If no code, just go home
-      window.location.href = window.location.origin;
-    }
-  </script>
-</head>
-<body style="background:#000;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;">
-  <p>Connecting to Spotify...</p>
-</body>
+<html>
+  <head><title>Spotify Callback</title></head>
+  <body>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("access_token");
+      if (token) {
+        localStorage.setItem("spotify_access_token", token);
+        window.location.href = "/";
+      } else {
+        document.body.innerText = "No token received.";
+      }
+    </script>
+  </body>
 </html>
