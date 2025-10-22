@@ -36,48 +36,39 @@
   <button id="login">Login with Spotify</button>
   <p id="status"></p>
 
-  <!-- Spotify SDK first -->
+  <!-- Spotify SDK -->
   <script src="https://sdk.scdn.co/spotify-player.js"></script>
 
-  <!-- App logic after -->
   <script>
-    console.log("🎬 Script loaded");
-
-    // Define SDK callback early to avoid load race
+    // Define SDK callback to avoid errors
     window.onSpotifyWebPlaybackSDKReady = () => {
       console.log("✅ Spotify SDK is ready");
     };
 
-    // Safe init once page fully loaded
-    window.addEventListener("DOMContentLoaded", () => {
-      const CLIENT_ID = "d82078bad1b04925bbd92ab2325c82b5";
-      const REDIRECT_URI = window.location.origin + "/callback.html";
+    window.addEventListener('DOMContentLoaded', () => {
+      const CLIENT_ID = 'd82078bad1b04925bbd92ab2325c82b5';
+      const REDIRECT_URI = window.location.origin + '/callback.html';
       const scopes = [
-        "streaming",
-        "user-read-email",
-        "user-read-private",
-        "user-modify-playback-state",
-        "user-read-playback-state"
+        'streaming',
+        'user-read-email',
+        'user-read-private',
+        'user-modify-playback-state',
+        'user-read-playback-state'
       ];
 
-      const button = document.getElementById("login");
-      if (!button) {
-        console.error("❌ Login button not found");
-        return;
-      }
+      const loginBtn = document.getElementById('login');
+      const status = document.getElementById('status');
 
-      button.onclick = () => {
+      loginBtn.addEventListener('click', () => {
         const authUrl =
-          "https://accounts.spotify.com/authorize" +
-          "?client_id=" + CLIENT_ID +
-          "&response_type=code" +
-          "&redirect_uri=" + encodeURIComponent(REDIRECT_URI) +
-          "&scope=" + encodeURIComponent(scopes.join(" "));
-        console.log("Redirecting to:", authUrl);
-        window.location.href = authUrl;
-      };
-
-      console.log("🚀 Button listener attached");
+          'https://accounts.spotify.com/authorize' +
+          '?client_id=' + CLIENT_ID +
+          '&response_type=token' +
+          '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
+          '&scope=' + encodeURIComponent(scopes.join(' '));
+        status.textContent = 'Opening Spotify login...';
+        window.open(authUrl, '_blank');
+      });
     });
   </script>
 </body>
