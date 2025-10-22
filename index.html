@@ -15,6 +15,7 @@
       align-items: center;
       justify-content: center;
       font-family: system-ui, sans-serif;
+      text-align: center;
     }
     button {
       background: #1db954;
@@ -24,7 +25,7 @@
       border-radius: 25px;
       font-size: 16px;
       cursor: pointer;
-      transition: background 0.3s;
+      margin: 8px;
     }
     button:hover {
       background: #1ed760;
@@ -34,41 +35,58 @@
 <body>
   <h2>🎧 Moka Spotify Player</h2>
   <button id="login">Login with Spotify</button>
-  <p id="status"></p>
+  <div id="player" style="display:none;">
+    <p id="track-info">Not playing</p>
+    <button id="prev">⏮️</button>
+    <button id="toggle">⏯️</button>
+    <button id="next">⏭️</button>
+  </div>
 
   <script src="https://sdk.scdn.co/spotify-player.js"></script>
-
   <script>
-    // Define SDK callback early to avoid errors
-    window.onSpotifyWebPlaybackSDKReady = () => {
-      console.log("Spotify SDK is ready");
-    };
+    const tokenFromUrl = new URLSearchParams(window.location.search).get("access_token");
+    if (tokenFromUrl) {
+      localStorage.setItem("spotify_access_token", tokenFromUrl);
+      window.history.replaceState({}, document.title, "/");
+    }
 
-    window.addEventListener("DOMContentLoaded", () => {
-      const CLIENT_ID = "d82078bad1b04925bbd92ab2325c82b5";
-      const REDIRECT_URI = window.location.origin + "/callback.html";
-      const scopes = [
-        "streaming",
-        "user-read-email",
-        "user-read-private",
-        "user-modify-playback-state",
-        "user-read-playback-state"
-      ];
+    const token = localStorage.getItem("spotify_access_token");
+    const loginBtn = document.getElementById("login");
+    const playerUI = document.getElementById("player");
+    const trackInfo = document.getElementById("track-info");
 
-      const loginBtn = document.getElementById("login");
-      const status = document.getElementById("status");
+    if (!token) {
+      loginBtn.style.display = "block";
+      loginBtn.onclick = () => (window.location.href = "/api/login");
+    } else {
+      loginBtn.style.display = "none";
+      playerUI.style.display = "block";
 
-      loginBtn.addEventListener("click", () => {
-        const authUrl =
-          "https://accounts.spotify.com/authorize" +
-          "?client_id=" + CLIENT_ID +
-          "&response_type=code" +
-          "&redirect_uri=" + encodeURIComponent(REDIRECT_URI) +
-          "&scope=" + encodeURIComponent(scopes.join(" "));
-        status.textContent = "Opening Spotify login...";
-        window.open(authUrl, "_blank");
-      });
-    });
+      window.onSpotifyWebPlaybackSDKReady = () => {
+        const player = new Spotify.Player({
+          name: "Moka Web Player",
+          getOAuthToken: cb => cb(token),
+          volume: 0.8
+        });
+
+        player.addListener("ready", ({ device_id }) => {
+          console.log("Ready with Device ID", device_id);
+          trackInfo.innerText = "Connected. Use Spotify app to start playback.";
+        });
+
+        player.addListener("player_state_changed", state => {
+          if (!state) return;
+          const current = state.track_window.current_track;
+          trackInfo.innerText = `🎵 ${current.name} – ${current.artists[0].name}`;
+        });
+
+        player.connect();
+
+        document.getElementById("toggle").onclick = () => player.togglePlay();
+        document.getElementById("next").onclick = () => player.nextTrack();
+        document.getElementById("prev").onclick = () => player.previousTrack();
+      };
+    }
   </script>
 </body>
 </html>
