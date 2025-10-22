@@ -1,8 +1,51 @@
 <!DOCTYPE html>
-<html>
-  <head><title>Moka Web Player</title></head>
-  <body>
-    <h1>🎧 Moka Web Player Placeholder</h1>
-    <p>Deployment successful.</p>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moka Spotify Player</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, sans-serif;
+    }
+    button {
+      background: #1db954;
+      border: none;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>🎧 Moka Spotify Player</h2>
+  <button id="login">Login with Spotify</button>
+  <p id="status"></p>
+
+  <script>
+    const CLIENT_ID = "d82078bad1b04925bbd92ab2325c82b5";
+    const REDIRECT_URI = window.location.origin + "/callback.html";
+    const scopes = ["streaming","user-read-email","user-read-private","user-modify-playback-state","user-read-playback-state"];
+
+    document.getElementById("login").onclick = () => {
+      const authUrl =
+        "https://accounts.spotify.com/authorize" +
+        "?client_id=" + CLIENT_ID +
+        "&response_type=token" +
+        "&redirect_uri=" + encodeURIComponent(REDIRECT_URI) +
+        "&scope=" + encodeURIComponent(scopes.join(" "));
+      window.location.href = authUrl;
+    };
+  </script>
+</body>
 </html>
