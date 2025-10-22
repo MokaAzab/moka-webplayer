@@ -26,6 +26,7 @@
       font-size: 16px;
       cursor: pointer;
       margin: 8px;
+      transition: background 0.2s;
     }
     button:hover {
       background: #1ed760;
@@ -44,12 +45,16 @@
 
   <script src="https://sdk.scdn.co/spotify-player.js"></script>
   <script>
-    const tokenFromUrl = new URLSearchParams(window.location.search).get("access_token");
+    // 1️⃣ Extract access token from URL (Spotify implicit grant)
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const tokenFromUrl = hashParams.get("access_token");
+
     if (tokenFromUrl) {
       localStorage.setItem("spotify_access_token", tokenFromUrl);
       window.history.replaceState({}, document.title, "/");
     }
 
+    // 2️⃣ Use token from storage
     const token = localStorage.getItem("spotify_access_token");
     const loginBtn = document.getElementById("login");
     const playerUI = document.getElementById("player");
@@ -71,7 +76,7 @@
 
         player.addListener("ready", ({ device_id }) => {
           console.log("Ready with Device ID", device_id);
-          trackInfo.innerText = "Connected. Use Spotify app to start playback.";
+          trackInfo.innerText = "✅ Connected. Open Spotify and select 'Moka Web Player'.";
         });
 
         player.addListener("player_state_changed", state => {
