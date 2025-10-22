@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Spotify Callback</title>
+<script>
+  const hash = window.location.hash;
+  if (hash) window.location.href = window.location.origin + "/" + hash;
+  else window.location.href = window.location.origin;
+</script>
+</head>
+<body style="background:#000;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif">
+  <p>Connecting to Spotify...</p>
+</body>
+</html>
