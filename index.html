@@ -36,48 +36,49 @@
   <button id="login">Login with Spotify</button>
   <p id="status"></p>
 
-  <script>
-    // ==============================
-    // CONFIG
-    // ==============================
-    const CLIENT_ID = "d82078bad1b04925bbd92ab2325c82b5";
-    const REDIRECT_URI = window.location.origin + "/callback.html";
-    const scopes = [
-      "streaming",
-      "user-read-email",
-      "user-read-private",
-      "user-modify-playback-state",
-      "user-read-playback-state"
-    ];
+  <!-- Spotify SDK first -->
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
 
-    // ==============================
-    // SDK CALLBACK FIX
-    // ==============================
+  <!-- App logic after -->
+  <script>
+    console.log("🎬 Script loaded");
+
+    // Define SDK callback early to avoid load race
     window.onSpotifyWebPlaybackSDKReady = () => {
       console.log("✅ Spotify SDK is ready");
     };
 
-    // ==============================
-    // AUTH REDIRECT
-    // ==============================
-    function redirectToSpotifyAuth() {
-      const authUrl =
-        "https://accounts.spotify.com/authorize" +
-        "?client_id=" + CLIENT_ID +
-        "&response_type=code" +
-        "&redirect_uri=" + encodeURIComponent(REDIRECT_URI) +
-        "&scope=" + encodeURIComponent(scopes.join(" "));
-      console.log("Redirecting to:", authUrl);
-      window.location.href = authUrl;
-    }
+    // Safe init once page fully loaded
+    window.addEventListener("DOMContentLoaded", () => {
+      const CLIENT_ID = "d82078bad1b04925bbd92ab2325c82b5";
+      const REDIRECT_URI = window.location.origin + "/callback.html";
+      const scopes = [
+        "streaming",
+        "user-read-email",
+        "user-read-private",
+        "user-modify-playback-state",
+        "user-read-playback-state"
+      ];
 
-    // ==============================
-    // INITIALIZE
-    // ==============================
-    document.getElementById("login").onclick = redirectToSpotifyAuth;
-    console.log("🎬 Script loaded and button active");
+      const button = document.getElementById("login");
+      if (!button) {
+        console.error("❌ Login button not found");
+        return;
+      }
+
+      button.onclick = () => {
+        const authUrl =
+          "https://accounts.spotify.com/authorize" +
+          "?client_id=" + CLIENT_ID +
+          "&response_type=code" +
+          "&redirect_uri=" + encodeURIComponent(REDIRECT_URI) +
+          "&scope=" + encodeURIComponent(scopes.join(" "));
+        console.log("Redirecting to:", authUrl);
+        window.location.href = authUrl;
+      };
+
+      console.log("🚀 Button listener attached");
+    });
   </script>
-
-  <script src="https://sdk.scdn.co/spotify-player.js"></script>
 </body>
 </html>
