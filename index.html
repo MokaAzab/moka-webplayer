@@ -36,38 +36,37 @@
   <button id="login">Login with Spotify</button>
   <p id="status"></p>
 
-  <!-- Spotify SDK -->
   <script src="https://sdk.scdn.co/spotify-player.js"></script>
 
   <script>
-    // Define SDK callback to avoid errors
+    // Define SDK callback early to avoid errors
     window.onSpotifyWebPlaybackSDKReady = () => {
-      console.log("✅ Spotify SDK is ready");
+      console.log("Spotify SDK is ready");
     };
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const CLIENT_ID = 'd82078bad1b04925bbd92ab2325c82b5';
-      const REDIRECT_URI = window.location.origin + '/callback.html';
+    window.addEventListener("DOMContentLoaded", () => {
+      const CLIENT_ID = "d82078bad1b04925bbd92ab2325c82b5";
+      const REDIRECT_URI = window.location.origin + "/callback.html";
       const scopes = [
-        'streaming',
-        'user-read-email',
-        'user-read-private',
-        'user-modify-playback-state',
-        'user-read-playback-state'
+        "streaming",
+        "user-read-email",
+        "user-read-private",
+        "user-modify-playback-state",
+        "user-read-playback-state"
       ];
 
-      const loginBtn = document.getElementById('login');
-      const status = document.getElementById('status');
+      const loginBtn = document.getElementById("login");
+      const status = document.getElementById("status");
 
-      loginBtn.addEventListener('click', () => {
+      loginBtn.addEventListener("click", () => {
         const authUrl =
-          'https://accounts.spotify.com/authorize' +
-          '?client_id=' + CLIENT_ID +
-          '&response_type=token' +
-          '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
-          '&scope=' + encodeURIComponent(scopes.join(' '));
-        status.textContent = 'Opening Spotify login...';
-        window.open(authUrl, '_blank');
+          "https://accounts.spotify.com/authorize" +
+          "?client_id=" + CLIENT_ID +
+          "&response_type=code" +
+          "&redirect_uri=" + encodeURIComponent(REDIRECT_URI) +
+          "&scope=" + encodeURIComponent(scopes.join(" "));
+        status.textContent = "Opening Spotify login...";
+        window.open(authUrl, "_blank");
       });
     });
   </script>
