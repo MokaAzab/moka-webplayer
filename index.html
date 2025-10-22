@@ -24,6 +24,7 @@
       border-radius: 25px;
       font-size: 16px;
       cursor: pointer;
+      transition: background 0.3s;
     }
     button:hover {
       background: #1ed760;
@@ -36,6 +37,9 @@
   <p id="status"></p>
 
   <script>
+    // ==============================
+    // CONFIG
+    // ==============================
     const CLIENT_ID = "d82078bad1b04925bbd92ab2325c82b5";
     const REDIRECT_URI = window.location.origin + "/callback.html";
     const scopes = [
@@ -46,6 +50,16 @@
       "user-read-playback-state"
     ];
 
+    // ==============================
+    // SDK CALLBACK FIX
+    // ==============================
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      console.log("✅ Spotify SDK is ready");
+    };
+
+    // ==============================
+    // AUTH REDIRECT
+    // ==============================
     function redirectToSpotifyAuth() {
       const authUrl =
         "https://accounts.spotify.com/authorize" +
@@ -57,7 +71,11 @@
       window.location.href = authUrl;
     }
 
+    // ==============================
+    // INITIALIZE
+    // ==============================
     document.getElementById("login").onclick = redirectToSpotifyAuth;
+    console.log("🎬 Script loaded and button active");
   </script>
 
   <script src="https://sdk.scdn.co/spotify-player.js"></script>
