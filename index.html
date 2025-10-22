@@ -25,6 +25,9 @@
       font-size: 16px;
       cursor: pointer;
     }
+    button:hover {
+      background: #1ed760;
+    }
   </style>
 </head>
 <body>
@@ -35,17 +38,28 @@
   <script>
     const CLIENT_ID = "d82078bad1b04925bbd92ab2325c82b5";
     const REDIRECT_URI = window.location.origin + "/callback.html";
-    const scopes = ["streaming","user-read-email","user-read-private","user-modify-playback-state","user-read-playback-state"];
+    const scopes = [
+      "streaming",
+      "user-read-email",
+      "user-read-private",
+      "user-modify-playback-state",
+      "user-read-playback-state"
+    ];
 
-    document.getElementById("login").onclick = () => {
+    function redirectToSpotifyAuth() {
       const authUrl =
         "https://accounts.spotify.com/authorize" +
         "?client_id=" + CLIENT_ID +
         "&response_type=token" +
         "&redirect_uri=" + encodeURIComponent(REDIRECT_URI) +
         "&scope=" + encodeURIComponent(scopes.join(" "));
+      console.log("Redirecting to:", authUrl);
       window.location.href = authUrl;
-    };
+    }
+
+    document.getElementById("login").onclick = redirectToSpotifyAuth;
   </script>
+
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
 </body>
 </html>
